@@ -4,7 +4,7 @@ define(['jquery','app/data/Data','app/utils/SocialSharing','lib/jquery-mousewhee
   _animationTime = 500,
   _changeReady = true,
   _scollReady = true,
-  _scrollEnabled = false,
+  _scrollEnabled = true,
   _scrollDelay,
   _fireChangeEnd;
 
@@ -150,11 +150,6 @@ define(['jquery','app/data/Data','app/utils/SocialSharing','lib/jquery-mousewhee
     if (slide.backgroundImage){
       slideBackgroundImage = $('<div class="slide-background-image slide-item" style="background-image:url(' + slide.backgroundImage + ');"></div>');
       $('.slide-item').last().after(slideBackgroundImage);
-
-      slideBackgroundImage.waitForImages(function(){
-        $('.loader').fadeOut();
-        _scrollEnabled = true;
-      });
     }
     var slideObj = {
       slide: slide,

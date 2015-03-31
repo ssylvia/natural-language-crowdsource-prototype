@@ -18,7 +18,7 @@ define(['lib/leaflet/dist/leaflet'],function(){
       basemapLayers: [{
         name: 'Gray',
         type: 'esriBasemap',
-        displayRetina: false
+        displayRetina: true
       },{
         name: 'GrayLabels',
         type: 'esriBasemap',
@@ -28,70 +28,25 @@ define(['lib/leaflet/dist/leaflet'],function(){
         }
       }],
       operationalLayers: [{
-        name: 'FarmersMarkets',
+        name: 'NationalParks',
         type: 'esriFeatureLayer',
-        url: 'http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/Farmers_Markets_update/FeatureServer/0',
-        scaleDependent: {
-          minZoom: 8,
+        url: 'http://services.arcgis.com/nzS0F0zdNLvs7nc8/arcgis/rest/services/National_Parks/FeatureServer/0',
+        popupFunction: function (feature) {
+          var prop = feature.properties;
+          var popupStr = '<h3>' + prop.Name + '</h3>';
+          return popupStr;
         },
-        layerOptions: {
-          pointToLayer: function(feature,latlng){
-            return L.marker(latlng, {
-              alt: feature.properties.marketname,
-              riseOnHover: true,
-              icon: L.icon({
-                iconUrl: 'resources/images/mapIcons/farmers-markets.png',
-                iconRetinaUrl: 'resources/images/mapIcons/farmers-markets-2x.png',
-                iconSize: [33, 60],
-                iconAnchor: [16, 54],
-                popupAnchor: [0, -45],
-              })
-            });
-          }
-        }
-      },{
-        name: 'FarmersMarketsTiles',
-        type: 'esriTileLayer',
-        url: 'http://staging.storymaps.esri.com/arcgis/rest/services/FarmersMarkets/markets_v1/MapServer/',
-        scaleDependent: {
-          minZoom: 2,
-          maxZoom: 7
-        }
-      },{
-        name: 'DriveTime',
-        type: 'esriTileLayer',
-        url: 'http://staging.storymaps.esri.com/arcgis/rest/services/FarmersMarkets/driving_v4/MapServer/',
-        layerOptions: {
-          opacity: 0.6,
-          maxNativeZoom: 12,
-          maxZoom: 16
-        },
-        scaleDependent: {
-          minZoom: 8,
-          maxNativeZoom: 12,
-          maxZoom: 16
-        }
-      },{
-        name: 'WalkTime',
-        type: 'esriTileLayer',
-        url: 'http://staging.storymaps.esri.com/arcgis/rest/services/FarmersMarkets/walking_v9/MapServer/',
-        layerOptions: {
-          opacity: 0.75,
-          maxNativeZoom: 12,
-          maxZoom: 16
-        },
-        scaleDependent: {
-          minZoom: 8,
-          maxZoom: 16
-        }
+        popupOnHover: true
       }]
     },
 
     slides: [{
-      mainTitle: true,
-      title: 'The Rapid Rise of Farmers\' Markets',
-      content: 'Farmers\' markets have more than quadrupled in number since the U.S. Department of Agriculture began keeping records in 1994. Scroll down to explore the farmers\' market phenomenon and discover markets in your community.',
-      backgroundImage: 'resources/images/slideContent/backgrounds/market.jpeg',
+      title: 'Favorite National Parks',
+      content: 'My first name is <input type="text" name="fname" placeholder="Sam">. I live in <input type="text" name="location" placeholder="Redlands"> and my favorite national park or monument is <input type="text" name="park" placeholder="Yellowstone">.',
+      layers: {
+        basemaps: ['Gray','GrayLabels'],
+        operational: ['NationalParks']
+      },
       tasks: {
         mapTasks: [{
           type: 'setBounds',
@@ -102,67 +57,11 @@ define(['lib/leaflet/dist/leaflet'],function(){
             }
           }
         }]
-      }
-    },{
-      title: 'A bumper crop of farmers\' markets',
-      content: 'The National Farmers\' Market Directory lists more than 8,000 markets, an increase of 76 percent since 2008. California hosts the most farmers\' markets, with New York not far behind. Market numbers are on the rise in all regions of the U.S., with the largest increase in the South.',
-      layers: {
-        basemaps: ['Gray','GrayLabels'],
-        operational: ['FarmersMarketsTiles','FarmersMarkets']
-      },
-      tasks: {
-        mapTasks: [{
-          type: 'disableMapNavigation'
-        },{
-          type: 'setBounds',
-          data: {
-            bounds: {
-              southWest:[25,-125],
-              northEast: [51,-66]
-            }
-          }
-        }]
-      }
-    },{
-      layers: {
-        basemaps: ['Gray','GrayLabels'],
-        operational: ['FarmersMarketsTiles','FarmersMarkets']
-      },
-      tasks: {
-        mapTasks: [{
-          type: 'enableMapNavigation'
-        },{
-          type: 'showItem',
-          data: {
-            selector: '#geocoder-wrapper'
-          }
-        }]
-      }
-    },{
-      title: 'Markets in your area',
-      content: '<div class="content-warning">Information about local farmers\' markets cannot be displayed at this scale. Please zoom in to explore more.</div><div class="main-content">Click on market symbols for more information. Most include links to market websites. Zoom out if no markets are visible.</div>',
-      layers: {
-        basemaps: ['Gray','GrayLabels'],
-        operational: ['FarmersMarketsTiles','FarmersMarkets']
-      }
-    },{
-      title: 'Access by car to farmers\' markets',
-      content: '<div class="content-warning">Driving times to local farmers\' markets cannot be displayed at this scale. Please zoom in to explore more.</div><div class="main-content">Blue shades on the map denote areas that are within a 15 minute drive of a farmers\' market. The darker the blue, the more markets that are within a quarter-hour drive. In large cities, some residents are within a 15-minute drive of more than 60 markets. Currently, 78% of the nation\'s driving population is within a 15 minute drive of one or more farmers\' markets.<br /><br /><img src="resources/images/slideContent/drive.png" alt="Drive time legend" /></div>',
-      layers: {
-        basemaps: ['Gray','GrayLabels'],
-        operational: ['FarmersMarketsTiles','FarmersMarkets','DriveTime']
-      }
-    },{
-      title: 'Walking to farmers\' markets',
-      content: '<div class="content-warning">Walking times to local farmers\' markets cannot be displayed at this scale. Please zoom in to explore more.</div><div class="main-content">Green areas indicate a walking time of 10 minutes. The darker the green, the more markets are accessible by a convenient walk. Currently, 4.5% of the nation\'s population is within a 10-minute walking distance of one or more farmers\' markets. These 10-minute walk areas can be small and you may need to zoom in to see them.<br /><br /><img src="resources/images/slideContent/walk.png" alt="Walk time legend" /></div>',
-      layers: {
-        basemaps: ['Gray','GrayLabels'],
-        operational: ['FarmersMarketsTiles','FarmersMarkets','WalkTime']
       }
     }],
 
     footer: {
-      content: '<p>For more information on farmers\' markets, visit <a href="http://farmersmarkets.usda.gov" target="_blank">farmersmarkets.usda.gov</a>. If you didn’t see your local market, encourage your community organizer to contribute to the national directory.</p><br><br /><p class="spread-word">Spread the word: <span class="social-media"><span class="social-button social-facebook icon-facebook"></span><span class="social-button social-twitter icon-twitter"></span></span></p>',
+      content: '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>',
       relatedStories: [{
         title: 'Feeding the World',
         url: 'http://storymaps.esri.com/stories/feedingtheworld/',
